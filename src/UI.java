@@ -12,7 +12,7 @@ public class UI {
     }
 
     public void start() {
-        String[] options = {"Algoritmos", "Configuracion", "Test"};
+        String[] options = {"Algoritmos", "Configuracion", "Test", "Calibrar colores"};
         int ans;
         do {
             LCD.clear();
@@ -26,6 +26,10 @@ public class UI {
                     break;
                 case 2:
                     testScreen();
+                    break;
+                case 3:
+                    bot.init();
+                    bot.calibrateColors();
                     break;
             }
         } while (ans != -1);
