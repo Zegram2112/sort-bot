@@ -51,7 +51,6 @@ public class UI {
     }
 
     private void testScreen() {
-        bot.init();
         int ans;
         do {
             LCD.clear();
