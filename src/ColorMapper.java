@@ -4,17 +4,12 @@ import lejos.robotics.Color;
 public class ColorMapper {
 
     Color[] colors;
-    String[] names;
 
     public ColorMapper() {
     }
 
     public void setColors(Color[] colors) {
         this.colors = colors;    
-    }
-
-    public void setNames(String[] names) {
-        this.names = names;
     }
 
     public int getId(Color color) {
