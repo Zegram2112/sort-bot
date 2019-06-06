@@ -10,7 +10,7 @@ public class SortBot {
     NXTRegulatedMotor rail;
     NXTRegulatedMotor base;
     NXTRegulatedMotor head;
-    ColorSensor colorSensor;
+    ColorHTSensor colorSensor;
     int curCell;
     boolean baseRetracted;
     int[] cellColors = new int[6];
@@ -30,6 +30,20 @@ public class SortBot {
         base.backward();
         Delay.msDelay(baseTime);
         base.stop();
+    }
+
+    /**
+     * Lee el color del bloque que esté abajo y lo retorna
+     **/
+    public int getColorID() {
+        return colorSensor.getColorID();
+    }
+
+    /**
+     * Retorna los colores de cada una de las celdas
+     * */
+    public int[] getCellColors() {
+        return cellColors;
     }
 
     public static void main (String[] args) {
@@ -73,22 +87,15 @@ public class SortBot {
     }
 
     /**
-     * Lee el color del bloque que esté abajo y lo retorna
+     * Recorre el carril leyendo cada uno de los colores
+     * en las celdas, los cuales pueden ser obtenidos con getCellColors()
      **/
-    public int getColorID() {
-        return colorSensor.getColorID();
-    }
-
     public void readColors() {
         for (int i = 0; i < 6; ++i) {
             moveTo(i+1);
             cellColors[i] = colorSensor.getColorID();
             Delay.msDelay(300);
         }
-    }
-
-    public int[] getCellColors() {
-        return cellColors;
     }
 
 

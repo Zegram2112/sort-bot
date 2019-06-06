@@ -140,8 +140,5 @@ public class UI {
         LCD.drawString(String.valueOf(p) + ". " + s, 2, p+initp); 
     }
 
-    private void test() {
-    }
-
 }
 
