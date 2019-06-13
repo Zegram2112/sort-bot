@@ -20,6 +20,7 @@ public class SortBot {
     int curCell;
     boolean baseRetracted;
     int[] cellColors = new int[6];
+    int[] slots = {-1, -1};
 
     public SortBot() {
         rail = Motor.A;
@@ -137,10 +138,18 @@ public class SortBot {
 
     public void takeCube(int slot, int pos) {
         cubeAct(slot, pos, false);
+        slots[slotIdToIndex(slot)] = cellColors[pos];
+        cellColors[pos] = -1;
     }
 
     public void dropCube(int slot, int pos) {
         cubeAct(slot, pos, true);
+        cellColors[pos] = slots[slotIdToIndex(slot)];
+        slots[slotIdToIndex(slot)] = -1;
+    }
+
+    private void slotIdToIndex(int id) {
+        return (slot == -1 ? 0 : 1);
     }
 
     private void cubeAct(int slot, int pos, boolean drop) {
