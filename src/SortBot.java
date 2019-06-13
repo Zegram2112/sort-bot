@@ -36,9 +36,6 @@ public class SortBot {
         curCell = 0;
         move(-6); 
         baseRetracted = false;
-        baseToggle();
-        baseToggle();
-        head.rotateTo(90);
     }
 
     /**
@@ -196,6 +193,7 @@ public class SortBot {
         takeCube(1, posB);
         dropCube(-1, posB);
         dropCube(1, posA);
+        move(-7);
     }
 
 }
