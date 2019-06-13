@@ -46,4 +46,36 @@ public class Controller {
         }
     }
 
+    public void bubbleSort() {
+        bot.init(); 
+        bot.readColors();
+        bot.move(6);
+        bot.move(-6);
+        while (!bot.isSorted()) {
+            int[] colors = bot.getCellColors();
+            for (int i = 0; i < colors.length - 1; ++i) {
+                if (colors[i] > colors[i+1]) {
+                    bot.swap(i, i+1); 
+                }
+            }
+            // se mueve el robot por todo el tablero
+            // como si este estuviese chequeando el orden
+            bot.move(6);
+            bot.move(-6);
+        }
+    }
+
+    public void insertionSort() {
+        bot.init();
+        bot.readColors();
+        for (int i = 1; i < bot.getCellColors().length; ++i) {
+            for (int j = i; j >= 1; --j) {
+                if (bot.getColor(j) > bot.getColor(j-1)) {
+                    break; 
+                }
+                bot.swap(j, j-1);
+            }
+        }
+    }
+
 }
