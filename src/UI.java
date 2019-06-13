@@ -75,8 +75,18 @@ public class UI {
         int ans;
         do {
             LCD.clear();
-            String[] options = {"QuickSort", "MergeSort", "BubbleSort"};
+            String[] options = {"InsertionSort", "MergeSort", "BubbleSort"};
             ans = menu(options,1);
+            switch (ans) {
+                case 0:
+                    control.insertionSort();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    control.bubbleSort();
+                    break;
+            }
         } while (ans != -1);
     }
 
