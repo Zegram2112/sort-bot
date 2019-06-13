@@ -54,6 +54,25 @@ public class SortBot {
     public int[] getCellColors() {
         return cellColors;
     }
+    
+    /**
+     * Retorna el color en la celda de un index dado
+     * */
+    public int getColor(int index) {
+        return cellColors[index];
+    }
+
+    /**
+     * Retorna true si los cubos están ordenados
+     * */
+    public boolean isSorted() {
+        for (int i = 0; i < cellColors.length - 1; ++i) {
+            if (cellColors[i] > cellColors[i+1]) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static void main (String[] args) {
         SortBot bot = new SortBot();;
