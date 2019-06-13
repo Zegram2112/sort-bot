@@ -148,8 +148,8 @@ public class SortBot {
         slots[slotIdToIndex(slot)] = -1;
     }
 
-    private void slotIdToIndex(int id) {
-        return (slot == -1 ? 0 : 1);
+    private int slotIdToIndex(int id) {
+        return (id == -1 ? 0 : 1);
     }
 
     private void cubeAct(int slot, int pos, boolean drop) {
