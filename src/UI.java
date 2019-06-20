@@ -155,3 +155,8 @@ public class UI {
 
 }
 
+interface Drawable {
+
+    public void draw();
+
+}
