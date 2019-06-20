@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "move(1) x 6", "readColor", "moveTo(3)", "baseToggle",
+    public String[] tests = {"Init", "take & drop", "readColor", "moveTo(3)", "baseToggle",
         "swap(2, 4)"};
 
     public Controller(SortBot bot) {
@@ -19,8 +19,9 @@ public class Controller {
                 break;
             case 1:
                 for (int i = 0; i < 6; ++i) {
-                    bot.move(1) ;
-                    Delay.msDelay(300);
+                    bot.takeCube(1, i);
+                    bot.dropCube(1, i);
+                    bot.init();
                 }
                 break;
             case 2:
