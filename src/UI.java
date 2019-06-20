@@ -1,5 +1,8 @@
 import lejos.util.Delay;
 import lejos.nxt.*;
+import java.util.Map;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class UI {
 
@@ -157,6 +160,34 @@ public class UI {
 
 interface Drawable {
 
-    public void draw();
+        public void draw();
+
+}
+
+class Node implements Drawable {
+
+    private Map<String, Node> childs;
+
+    public Node() {
+        childs = new HashMap<String, Node>(); 
+    }
+
+    public void addChild(Node node, String name) {
+        childs.put(name, node);
+    }
+
+    public Node getChild(String name) {
+        return childs.get(name);
+    }
+
+    public Collection<Node> getChilds() {
+        return childs.values();
+    }
+
+    public void draw() {
+        for (Node node : getChilds()) {
+            node.draw();
+        }
+    }
 
 }
