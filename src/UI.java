@@ -160,7 +160,7 @@ public class UI {
 
 interface Drawable {
 
-        public void draw();
+        public void draw(int x, int y, int w, int h);
 
 }
 
@@ -184,9 +184,9 @@ class Node implements Drawable {
         return childs.values();
     }
 
-    public void draw() {
+    public void draw(int x, int y, int w, int h) {
         for (Node node : getChilds()) {
-            node.draw();
+            node.draw(x, y, w, h);
         }
     }
 
