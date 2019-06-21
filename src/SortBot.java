@@ -5,9 +5,19 @@ import lejos.robotics.Color;
 
 public class SortBot { 
 
-    public int stepAngle = 67;
+    public int stepAngle = 66;
     public int stepVel = 300;
     public int baseTime = 800;
+
+    // stepError fue calculado en base al movimiento del SortBot
+    // utilizando un stepAngle de 67 y 68.
+    // Corresponde a cuanto error (en grados) acumula
+    // cada vez que se mueve un paso
+    // Un sistema ideal se movería exactamente un bloque, pero
+    // como el robot no es 100% preciso este se desfasa
+    // cada movimiento.
+    float accumulatedError = 0.0f;
+    float stepError = 0.5f;
 
     NXTRegulatedMotor rail;
     NXTRegulatedMotor base;
@@ -31,6 +41,7 @@ public class SortBot {
     }
 
     public void init() {
+        accumulatedError = 0;
         curCell = 0;
         move(-6); 
         baseRetracted = false;
@@ -83,18 +94,31 @@ public class SortBot {
      * de celdas
      **/
     public void move(int steps) {
-        move((float) steps);
+        move((float) steps, stepVel, true);
         curCell = Math.max(Math.min(6, curCell + steps), 0);
     }
 
     private void move(float steps) {
-        rail.setSpeed(stepVel);
-        rail.rotate((int) (-steps * stepAngle));
+        move(steps, stepVel);
     }
 
     private void move(float steps, int stepVel) {
+        move(steps, stepVel, false);
+    }
+
+    private void move(float steps, int stepVel, boolean checkError) {
         rail.setSpeed(stepVel);
-        rail.rotate((int) (-steps * stepAngle));
+        if (!checkError) {
+            rail.rotate((int)(-steps * stepAngle));
+            return;
+        }
+        int correction = 0;
+        accumulatedError += -steps * stepError;
+        if (accumulatedError > 1 || accumulatedError < -1) {
+            correction = -((int) accumulatedError);    
+            accumulatedError += correction;
+        }
+        rail.rotate(((int)(-steps * stepAngle)) - correction);
     }
 
     /** 
@@ -175,18 +199,19 @@ public class SortBot {
         head.rotate(90 * slot);
         baseToggle();
         Delay.msDelay(200);
-        if (drop) {
-            float steps;
-            if (pos == 1) {
-                steps = 0.45f;
-            } else if (pos >= 4) {
-                steps = 0.55f; 
-            } else {
-                steps = 0.5f;
+        if (drop){
+            float step;
+            switch (pos) {
+                case 4:
+                    step = 0.55f;
+                case 5:
+                    step = 0.65f;
+                default:
+                    step = 0.5f;
             }
-            move(steps, stepVel/2); 
+            move(step, stepVel/2); 
             baseToggle();
-            move(-steps);
+            move(-step);
         } else {
             baseToggle();
         }

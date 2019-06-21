@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "take & drop", "readColor", "moveTo(3)", "baseToggle",
+    public String[] tests = {"Init", "take & drop", "readColor", "move across", "move(1)",
         "swap(2, 4)"};
 
     public Controller(SortBot bot) {
@@ -36,10 +36,16 @@ public class Controller {
                 ui.printTestOutput(s);
                 break;
             case 3:
-                bot.moveTo(3);
+                bot.init();
+                bot.baseToggle();
+                Button.ENTER.waitForPress();
+                bot.move(4);
+                Button.ENTER.waitForPress();
+                bot.baseToggle();
+                bot.init();
                 break;
             case 4:
-                bot.baseToggle();
+                bot.move(1);
                 break;
             case 5:
                 bot.swap(2, 4);
