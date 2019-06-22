@@ -1,3 +1,5 @@
+package sortbot;
+
 import lejos.nxt.*;
 import lejos.nxt.addon.ColorHTSensor;
 import lejos.util.Delay;
