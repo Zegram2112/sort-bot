@@ -1,45 +1,69 @@
 package sortbot.ui;
-import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Collection;
 
-public class Node implements Drawable {
+public class Node implements Drawable, InputHandler {
 
     private String name;
     private Node parent;
-    private Map<String, Node> children;    
+    private List<Node> children;
 
     public Node() {
-        children = new LinkedHashMap<String, Node>();
+        children = new ArrayList<Node>();
         parent = null;
         name = "root";
     }
 
     public Node getChild(String name) {
-        return children.get(name);
+        int index = getChildIndex(name);
+        if (index != -1) {
+            return children.get(index);
+        }
+        return null;
     }
 
-    public void setChild(String name, Node child) {
+    public void addChild(String name, Node child) {
         child.parent = this;
         child.name = name;
-        children.put(name, child);
+        children.add(child);
     }
 
     public void removeChild(String name) {
-        children.remove(name); 
+        int index = getChildIndex(name);
+        if (index != -1) {
+            children.remove(index);
+        }
+    }
+
+    private int getChildIndex(String name) {
+        for (int i = 0; i < ((ArrayList)children).size(); ++i) {
+            if (children.get(i).name == name) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public Collection<Node> getChildren() {
-        return children.values();
+        return children;
     }
 
     public void destroy() {
         parent.removeChild(name);
     }
 
+    @Override
     public void draw(int x, int y, int w, int h) {     
         for (Node child : getChildren()) {
             child.draw(x, y, w, h);
+        }
+    }
+
+    @Override
+    public void handleInput() {
+        for (Node child : getChildren()) {
+            child.handleInput();
         }
     }
 
