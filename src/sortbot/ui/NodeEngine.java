@@ -15,6 +15,7 @@ public class NodeEngine {
         screens = new Stack<Node>();
         screens.push(root);
         while (!screens.empty()) {
+            LCD.clear();
             handleInput();
             draw();
             Delay.msDelay(REFRESH_RATE);            
