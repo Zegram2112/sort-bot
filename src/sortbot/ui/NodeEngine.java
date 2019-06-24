@@ -6,9 +6,9 @@ import java.util.Stack;
 
 public class NodeEngine {
 
-    public static final SCREEN_WIDTH = 16;
-    public static final SCREEN_HEIGHT = 10;
-    public static final REFRESH_RATE = 200;
+    public static final int SCREEN_WIDTH = 16;
+    public static final int SCREEN_HEIGHT = 10;
+    public static final int REFRESH_RATE = 200;
     private static Stack<Node> screens;
 
     public static void run(Node root) {

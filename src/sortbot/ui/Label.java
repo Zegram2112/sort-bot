@@ -2,7 +2,7 @@ package sortbot.ui.Label;
 
 public class Label extends Node {
 
-    private String content
+    private String content;
 
     public void Label(String s) {
         content = s;

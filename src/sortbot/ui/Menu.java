@@ -1,13 +1,13 @@
 package sortbot.ui;
 
 abstract class Menu extends Node {
-    private cursor = 0;
+    private int cursor = 0;
 
     abstract public String[] getOptions();
     abstract public void optionSelected(int i);
 
     @Override
-    public draw(int x, int y, int w, int h) {
+    public void draw(int x, int y, int w, int h) {
         LCD.drawString(">", x, y + cursor);
         for (int i = 0; i < min(getOptions().length, h); ++i) {
             LCD.drawString(String.valueOf(i+1) + ". " + s, x + 1, y + i); 
@@ -15,7 +15,7 @@ abstract class Menu extends Node {
     }
 
     @Override
-    public handleInput(int input) {
+    public void handleInput(int input) {
         switch (input) {
             case Button.ID_LEFT:
                 cursor = Math.max(0, cursor - 1);
