@@ -26,6 +26,10 @@ public class NodeEngine {
         screens.push(node);
     }
 
+    public static Node getActiveNode() {
+        return screens.peek();
+    }
+
     private static void draw() {
         screens.peek().draw(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     }
