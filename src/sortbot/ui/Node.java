@@ -61,9 +61,9 @@ public class Node implements Drawable, InputHandler {
     }
 
     @Override
-    public void handleInput() {
+    public void handleInput(int input) {
         for (Node child : getChildren()) {
-            child.handleInput();
+            child.handleInput(int input);
         }
     }
 
