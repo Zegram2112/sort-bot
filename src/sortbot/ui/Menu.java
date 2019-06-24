@@ -1,6 +1,8 @@
 package sortbot.ui;
 
-abstract class Menu extends Node {
+import lejos.nxt.*;
+
+public abstract class Menu extends Node {
     private int cursor = 0;
 
     abstract public String[] getOptions();
@@ -9,7 +11,9 @@ abstract class Menu extends Node {
     @Override
     public void draw(int x, int y, int w, int h) {
         LCD.drawString(">", x, y + cursor);
-        for (int i = 0; i < min(getOptions().length, h); ++i) {
+        String s;
+        for (int i = 0; i < Math.min(getOptions().length, h); ++i) {
+            s = getOptions()[i];
             LCD.drawString(String.valueOf(i+1) + ". " + s, x + 1, y + i); 
         }
     }

@@ -1,4 +1,6 @@
-package sortbot.ui.Label;
+package sortbot.ui;
+
+import lejos.nxt.*;
 
 public class Label extends Node {
 

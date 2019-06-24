@@ -39,11 +39,20 @@ public class NodeEngine {
         if (input == 0) {
             return; 
         }
-        Button.waitForAnyPressAndRelease();
+        waitForRelease();
         if (input == Button.ID_ESCAPE) {
             screens.pop(); 
         } else {
             screens.peek().handleInput(input);
+        }
+    }
+
+    private static void waitForRelease() {
+        while (Button.ENTER.isDown()
+                || Button.LEFT.isDown()
+                || Button.RIGHT.isDown()
+                || Button.ESCAPE.isDown()) {
+           Delay.msDelay(50);
         }
     }
 
