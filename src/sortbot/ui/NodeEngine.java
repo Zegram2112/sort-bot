@@ -26,6 +26,10 @@ public class NodeEngine {
         screens.push(node);
     }
 
+    public static void removeActiveNode() {
+        screens.pop();
+    }
+
     public static Node getActiveNode() {
         return screens.peek();
     }
