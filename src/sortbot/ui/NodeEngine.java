@@ -23,6 +23,8 @@ public class NodeEngine {
     }
 
     public static void addNode(Node node) {
+        Node screen = new Node();
+        screen.addChild("screen-child", node);
         screens.push(node);
     }
 

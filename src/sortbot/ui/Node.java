@@ -49,6 +49,10 @@ public class Node implements Drawable, InputHandler {
         return children;
     }
 
+    public Node getParent() {
+        return parent;
+    }
+
     public void destroy() {
         if (parent == null) {
             NodeEngine.removeActiveNode();

@@ -6,7 +6,7 @@ public class Label extends Node {
 
     private String content;
 
-    public void Label(String s) {
+    public Label(String s) {
         content = s;
     }
 
