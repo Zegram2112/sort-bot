@@ -25,7 +25,7 @@ public abstract class Menu extends Node {
                 cursor = Math.max(0, cursor - 1);
                 break;
             case Button.ID_RIGHT:
-                cursor += Math.min(cursor + 1, getOptions().length);
+                cursor = Math.min(cursor + 1, getOptions().length);
                 break;
             case Button.ID_ENTER:
                 optionSelected(cursor);
