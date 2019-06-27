@@ -16,9 +16,9 @@ public class NodeEngine {
         screens.push(root);
         while (!screens.empty()) {
             LCD.clear();
-            handleInput();
             draw();
             Delay.msDelay(REFRESH_RATE);            
+            handleInput();
         }
     }
 
