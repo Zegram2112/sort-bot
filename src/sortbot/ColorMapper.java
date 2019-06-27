@@ -1,3 +1,5 @@
+package sortbot;
+
 import lejos.robotics.Color;
 
 

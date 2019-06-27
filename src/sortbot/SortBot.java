@@ -1,3 +1,5 @@
+package sortbot;
+
 import lejos.nxt.*;
 import lejos.nxt.addon.ColorHTSensor;
 import lejos.util.Delay;
@@ -7,9 +9,17 @@ public class SortBot {
 
     public int stepAngle = 66;
     public int stepVel = 300;
-    public int baseTime = 500;
+    public int baseTime = 800;
 
-    public int takeTime = 200;
+    // stepError fue calculado en base al movimiento del SortBot
+    // utilizando un stepAngle de 67 y 68.
+    // Corresponde a cuanto error (en grados) acumula
+    // cada vez que se mueve un paso
+    // Un sistema ideal se movería exactamente un bloque, pero
+    // como el robot no es 100% preciso este se desfasa
+    // cada movimiento.
+    float accumulatedError = 0.0f;
+    float stepError = 0.5f;
 
     NXTRegulatedMotor rail;
     NXTRegulatedMotor base;
@@ -26,13 +36,14 @@ public class SortBot {
         rail = Motor.A;
         base = Motor.B;
         head = Motor.C;
-        colorSensor = new ColorHTSensor(SensorPort.S1);
+        colorSensor = new ColorHTSensor(SensorPort.S4);
         colorMapper = new ColorMapper();
 
         base.setSpeed(200);
     }
 
     public void init() {
+        accumulatedError = 0;
         curCell = 0;
         move(-6); 
         baseRetracted = false;
@@ -85,13 +96,31 @@ public class SortBot {
      * de celdas
      **/
     public void move(int steps) {
-        move((float) steps);
+        move((float) steps, stepVel, true);
         curCell = Math.max(Math.min(6, curCell + steps), 0);
     }
 
     private void move(float steps) {
+        move(steps, stepVel);
+    }
+
+    private void move(float steps, int stepVel) {
+        move(steps, stepVel, false);
+    }
+
+    private void move(float steps, int stepVel, boolean checkError) {
         rail.setSpeed(stepVel);
-        rail.rotate((int) (-steps * stepAngle));
+        if (!checkError) {
+            rail.rotate((int)(-steps * stepAngle));
+            return;
+        }
+        int correction = 0;
+        accumulatedError += -steps * stepError;
+        if (accumulatedError > 1 || accumulatedError < -1) {
+            correction = -((int) accumulatedError);    
+            accumulatedError += correction;
+        }
+        rail.rotate(((int)(-steps * stepAngle)) - correction);
     }
 
     /** 
@@ -124,32 +153,28 @@ public class SortBot {
      * en las celdas, los cuales pueden ser obtenidos con getCellColors()
      **/
     public void readColors() {
-        if (!baseRetracted) {
-            baseToggle();
-        }
+        move(0.3f);
+        Delay.msDelay(300);
         for (int i = 0; i < 6; ++i) {
             moveTo(i+1);
             cellColors[i] = colorMapper.getId(
                     colorSensor.getColor());
-            Delay.msDelay(300);
+            Delay.msDelay(100);
         }
-        baseToggle();
-        move(-6);
+        move(-7);
     }
 
     public void calibrateColors() {
-        if (!baseRetracted) {
-            baseToggle();
-        }
         Color[] colors = new Color[6];
+        move(0.3f);
+        Delay.msDelay(300);
         for (int i = 0; i < 6; ++i) {
             moveTo(i+1);
             colors[i] = colorSensor.getColor();
-            Delay.msDelay(300);
+            Delay.msDelay(100);
         }
         colorMapper.setColors(colors);
-        baseToggle();
-        move(-6);
+        move(-7);
     }
 
     public void takeCube(int slot, int pos) {
@@ -173,19 +198,26 @@ public class SortBot {
             baseToggle();
         }
         moveTo(pos);
-        move(-0.5f);
         head.rotate(90 * slot);
         baseToggle();
-        Delay.msDelay(takeTime);
-        if (drop) {
-            move(0.5f); 
+        Delay.msDelay(200);
+        if (drop){
+            float step;
+            switch (pos) {
+                case 4:
+                    step = 0.55f;
+                case 5:
+                    step = 0.65f;
+                default:
+                    step = 0.5f;
+            }
+            move(step, stepVel/2); 
             baseToggle();
-            move(-0.5f);
+            move(-step);
         } else {
             baseToggle();
         }
         head.rotate(-90 * slot);
-        move(0.5f);
     }
 
     public void swap(int posA, int posB) {

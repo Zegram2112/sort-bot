@@ -1,3 +1,5 @@
+package sortbot;
+
 import lejos.util.Delay;
 import lejos.nxt.*;
 import java.util.Arrays;
@@ -5,7 +7,7 @@ import java.util.Arrays;
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "move(1) x 6", "readColor", "moveTo(3)", "baseToggle",
+    public String[] tests = {"Init", "take & drop", "readColor", "move across", "move(1)",
         "swap(2, 4)"};
 
     public Controller(SortBot bot) {
@@ -19,8 +21,9 @@ public class Controller {
                 break;
             case 1:
                 for (int i = 0; i < 6; ++i) {
-                    bot.move(1) ;
-                    Delay.msDelay(300);
+                    bot.takeCube(1, i);
+                    bot.dropCube(1, i);
+                    bot.init();
                 }
                 break;
             case 2:
@@ -35,10 +38,16 @@ public class Controller {
                 ui.printTestOutput(s);
                 break;
             case 3:
-                bot.moveTo(3);
+                bot.init();
+                bot.baseToggle();
+                Button.ENTER.waitForPress();
+                bot.move(4);
+                Button.ENTER.waitForPress();
+                bot.baseToggle();
+                bot.init();
                 break;
             case 4:
-                bot.baseToggle();
+                bot.move(1);
                 break;
             case 5:
                 bot.swap(2, 4);

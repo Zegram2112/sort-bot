@@ -1,3 +1,5 @@
+package sortbot;
+
 import lejos.util.Delay;
 import lejos.nxt.*;
 import java.util.Map;
