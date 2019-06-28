@@ -7,8 +7,9 @@ import lejos.robotics.Color;
 
 public class SortBot { 
 
-    public int stepAngle = 66;
-    public int stepVel = 300;
+    public int whiteCorrection = 30;
+    public int stepVel = 200;
+    public int dropVel = 100;
     public int baseTime = 800;
 
     // stepError fue calculado en base al movimiento del SortBot
@@ -26,6 +27,7 @@ public class SortBot {
     NXTRegulatedMotor head;
     ColorHTSensor colorSensor;
     ColorMapper colorMapper;
+    LightSensor lightSensor;
 
     int curCell;
     boolean baseRetracted;
@@ -38,14 +40,18 @@ public class SortBot {
         head = Motor.C;
         colorSensor = new ColorHTSensor(SensorPort.S4);
         colorMapper = new ColorMapper();
+        lightSensor = new LightSensor(SensorPort.S3);
 
-        base.setSpeed(200);
+        base.setSpeed(stepVel);
     }
 
     public void init() {
         accumulatedError = 0;
         curCell = 0;
-        move(-6); 
+        rail.setSpeed(stepVel);
+        rail.forward();
+        Delay.msDelay(3000);
+        rail.stop();
         baseRetracted = false;
     }
 
@@ -96,31 +102,41 @@ public class SortBot {
      * de celdas
      **/
     public void move(int steps) {
-        move((float) steps, stepVel, true);
+        if (steps == 0) return;
+        int targetSteps = Math.abs(steps);
+        int curSteps = 0;
+        int correction;
+        boolean black = false;
+        rail.setSpeed(stepVel);
+        if (steps > 0) {
+            rail.backward();
+            correction = -whiteCorrection;
+        } else {
+            rail.forward();
+            correction = whiteCorrection;
+        }
+
+        while (curSteps < targetSteps) {
+            if (black == !onBlackBar()) {
+                black = onBlackBar();
+                if (black == true) {
+                    curSteps += 1;
+                }
+            }
+        }
+        rail.stop();
+        rail.rotate(correction);
+
         curCell = Math.max(Math.min(6, curCell + steps), 0);
     }
 
-    private void move(float steps) {
-        move(steps, stepVel);
+    public boolean onBlackBar() {
+        int color = lightSensor.readNormalizedValue();
+        return color < 500;
     }
 
-    private void move(float steps, int stepVel) {
-        move(steps, stepVel, false);
-    }
-
-    private void move(float steps, int stepVel, boolean checkError) {
-        rail.setSpeed(stepVel);
-        if (!checkError) {
-            rail.rotate((int)(-steps * stepAngle));
-            return;
-        }
-        int correction = 0;
-        accumulatedError += -steps * stepError;
-        if (accumulatedError > 1 || accumulatedError < -1) {
-            correction = -((int) accumulatedError);    
-            accumulatedError += correction;
-        }
-        rail.rotate(((int)(-steps * stepAngle)) - correction);
+    public int getBarValue() {
+        return lightSensor.readNormalizedValue(); 
     }
 
     /** 
@@ -153,7 +169,7 @@ public class SortBot {
      * en las celdas, los cuales pueden ser obtenidos con getCellColors()
      **/
     public void readColors() {
-        move(0.3f);
+        init();
         Delay.msDelay(300);
         for (int i = 0; i < 6; ++i) {
             moveTo(i+1);
@@ -161,12 +177,12 @@ public class SortBot {
                     colorSensor.getColor());
             Delay.msDelay(100);
         }
-        move(-7);
+        init();
     }
 
     public void calibrateColors() {
         Color[] colors = new Color[6];
-        move(0.3f);
+        init();
         Delay.msDelay(300);
         for (int i = 0; i < 6; ++i) {
             moveTo(i+1);
@@ -174,7 +190,7 @@ public class SortBot {
             Delay.msDelay(100);
         }
         colorMapper.setColors(colors);
-        move(-7);
+        init();
     }
 
     public void takeCube(int slot, int pos) {
@@ -202,18 +218,15 @@ public class SortBot {
         baseToggle();
         Delay.msDelay(200);
         if (drop){
-            float step;
-            switch (pos) {
-                case 4:
-                    step = 0.55f;
-                case 5:
-                    step = 0.65f;
-                default:
-                    step = 0.5f;
+            rail.setSpeed(dropVel);
+            rail.backward();
+            while (!onBlackBar()) {
+                // going backwards
             }
-            move(step, stepVel/2); 
+            rail.stop();
             baseToggle();
-            move(-step);
+            rail.rotate(whiteCorrection);
+            rail.setSpeed(stepVel);
         } else {
             baseToggle();
         }
@@ -225,7 +238,6 @@ public class SortBot {
         takeCube(1, posB);
         dropCube(-1, posB);
         dropCube(1, posA);
-        move(-7);
     }
 
 }

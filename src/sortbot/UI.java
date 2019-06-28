@@ -25,7 +25,7 @@ public class UI {
     class MenuPrincipal extends Menu {
         @Override
         public String[] getOptions() {
-            String[] ops = {"Algoritmos", "Configuracion", "Test", "Calibrar"};
+            String[] ops = {"Algoritmos", "Test", "Calibrar"};
             return ops;
         }
         @Override
@@ -35,12 +35,9 @@ public class UI {
                     NodeEngine.addNode(new MenuAlgoritmos());
                     break;
                 case 1:
-                    NodeEngine.addNode(new MenuConfig());
-                    break;
-                case 2:
                     NodeEngine.addNode(new MenuTest());
                     break;
-                case 3:
+                case 2:
                     bot.init();
                     bot.calibrateColors();
                     break;
@@ -62,39 +59,6 @@ public class UI {
                     break;
                 case 1:
                     control.bubbleSort();
-                    break;
-            }
-        }
-    }
-
-    class MenuConfig extends Menu {
-        @Override
-        public String[] getOptions() {
-            String[] r =  {"Step vel", "Step angle"};
-            return r;
-        }
-        @Override
-        public void optionSelected(int i) {
-            switch (i) {
-                case 0: 
-                    NodeEngine.addNode(
-                        new Bar(100, 800, 7, bot.stepVel) {
-                            @Override
-                            public void onSelect(int val) {
-                                bot.stepVel = val;            
-                            }
-                        }
-                    );
-                    break;
-                case 1:
-                    NodeEngine.addNode(
-                        new Bar(60, 70, 10, (int) bot.stepAngle) {
-                            @Override
-                            public void onSelect(int val) {
-                                bot.stepAngle = val;
-                            }
-                        }
-                    );
                     break;
             }
         }

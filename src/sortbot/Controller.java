@@ -7,8 +7,8 @@ import java.util.Arrays;
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "take & drop", "readColor", "move across", "move(1)",
-        "swap(2, 4)"};
+    public String[] tests = {"Init", "take & drop", "readColor", "move across", "lightSensor",
+        "swap(2, 4)", "moveAcrossBlacks"};
 
     public Controller(SortBot bot) {
         this.bot = bot;
@@ -20,10 +20,10 @@ public class Controller {
                 bot.init();
                 break;
             case 1:
+                bot.init();
                 for (int i = 0; i < 6; ++i) {
                     bot.takeCube(1, i);
                     bot.dropCube(1, i);
-                    bot.init();
                 }
                 break;
             case 2:
@@ -39,18 +39,45 @@ public class Controller {
                 break;
             case 3:
                 bot.init();
-                bot.baseToggle();
-                Button.ENTER.waitForPress();
-                bot.move(4);
-                Button.ENTER.waitForPress();
-                bot.baseToggle();
+                for (int i = 0; i <= 6; ++i) {
+                    bot.moveTo(i);
+                    Delay.msDelay(500);
+                };
+                for (int i = 6; i >= 0; --i) {
+
+                }
                 bot.init();
                 break;
             case 4:
-                bot.move(1);
+                while (true) {
+                    LCD.clear();
+                    int color = bot.getBarValue();
+                    LCD.drawInt(color, 0, 0); 
+                    Delay.msDelay(100);
+                    if (Button.ESCAPE.isDown()) {
+                        break;
+                    }
+                }
                 break;
             case 5:
                 bot.swap(2, 4);
+                break;
+            case 6:
+                bot.init();
+                while (true) {
+                    Motor.A.backward();
+                    while (!bot.onBlackBar()) {
+                    }
+                    Motor.A.stop();
+
+                    if (Button.ESCAPE.isDown()) break;
+                    Button.ENTER.waitForPressAndRelease();
+
+                    Motor.A.backward();
+                    while (bot.onBlackBar()) {
+                
+                    }
+                }
                 break;
         }
     }
@@ -58,8 +85,8 @@ public class Controller {
     public void bubbleSort() {
         bot.init(); 
         bot.readColors();
-        bot.move(6);
-        bot.move(-6);
+        bot.moveTo(6);
+        bot.moveTo(0);
         while (!bot.isSorted()) {
             int[] colors = bot.getCellColors();
             for (int i = 0; i < colors.length - 1; ++i) {
@@ -69,8 +96,8 @@ public class Controller {
             }
             // se mueve el robot por todo el tablero
             // como si este estuviese chequeando el orden
-            bot.move(6);
-            bot.move(-6);
+            bot.moveTo(6);
+            bot.moveTo(0);
         }
     }
 
