@@ -167,7 +167,7 @@ public class SortBot {
     /**
      * Recorre el carril leyendo cada uno de los colores
      * en las celdas, los cuales pueden ser obtenidos con getCellColors()
-     **/
+     */
     public void readColors() {
         init();
         Delay.msDelay(300);
