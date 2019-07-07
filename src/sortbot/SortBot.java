@@ -5,12 +5,16 @@ import lejos.nxt.addon.ColorHTSensor;
 import lejos.util.Delay;
 import lejos.robotics.Color;
 
-public class SortBot { 
-
-    public int whiteCorrection = 30;
-    public int stepVel = 200;
-    public int dropVel = 100;
+public class SortBot {
+	public int[] backwardCorrections = {-0, -32, -30, -33, -28, -33, -36};
+	public int[] forwardCorrections = {36, 35, 33 ,33, 29, 30, 0};
+	//public int backwardCorrection = 0; // Moviendose izq a derecha (-20)
+	//public int forwardCorrection = 0; // Moviendose derecha a izquierda (45)
+    public int stepVel = 200; // recomendado 200
+    public int dropVel = 200;
     public int baseTime = 800;
+	public int barCenter = 546; // Valor del sensor al medio de la linea
+	public int barError = 20; // Error asociado
 
     // stepError fue calculado en base al movimiento del SortBot
     // utilizando un stepAngle de 67 y 68.
@@ -106,30 +110,35 @@ public class SortBot {
         int targetSteps = Math.abs(steps);
         int curSteps = 0;
         int correction;
-        boolean black = false;
+        boolean white = false;
         rail.setSpeed(stepVel);
         if (steps > 0) {
             rail.backward();
-            correction = -whiteCorrection;
+            correction = backwardCorrections[curCell+steps];
         } else {
             rail.forward();
-            correction = whiteCorrection;
+            correction = forwardCorrections[curCell+steps];
         }
 
         while (curSteps < targetSteps) {
-            if (black == !onBlackBar()) {
-                black = onBlackBar();
-                if (black == true) {
+            if (white != onWhiteBar()) {
+                white = onWhiteBar();
+                if (white == true) {
                     curSteps += 1;
                 }
             }
         }
         rail.stop();
         rail.rotate(correction);
-
         curCell = Math.max(Math.min(6, curCell + steps), 0);
     }
-
+	
+	public boolean onWhiteBar(){
+		int light = getBarValue();
+		int lower = barCenter - barError;
+		int upper = barCenter + barError;
+		return light > lower && light < upper;
+	}
     public boolean onBlackBar() {
         int color = lightSensor.readNormalizedValue();
         return color < 500;
@@ -220,12 +229,12 @@ public class SortBot {
         if (drop){
             rail.setSpeed(dropVel);
             rail.backward();
-            while (!onBlackBar()) {
-                // going backwards
+            while (!onWhiteBar()){
+                // moverse hasta la pared
             }
             rail.stop();
             baseToggle();
-            rail.rotate(whiteCorrection);
+            rail.rotate(forwardCorrections[pos]);
             rail.setSpeed(stepVel);
         } else {
             baseToggle();
@@ -234,6 +243,12 @@ public class SortBot {
     }
 
     public void swap(int posA, int posB) {
+		if(posA == posB) return;
+		if(posA > posB){ //swapear las variables para que posA sea menor
+			int aux = posA;
+			posA = posB;
+			posB = aux;
+		}
         takeCube(-1, posA);
         takeCube(1, posB);
         dropCube(-1, posB);

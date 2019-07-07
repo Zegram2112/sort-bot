@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "take & drop", "readColor", "move across", "lightSensor",
+    public String[] tests = {"Init", "moveTo", "readColor", "lightSensor", "move across", 
         "swap(2, 4)", "moveAcrossBlacks"};
 
     public Controller(SortBot bot) {
@@ -17,8 +17,9 @@ public class Controller {
     public void execTest(int test, UI ui) {
         switch(test) {
             case 0:
-                bot.init();
+				bot.init();
                 break;
+			/* old: take and drop
             case 1:
                 bot.init();
                 for (int i = 0; i < 6; ++i) {
@@ -26,6 +27,32 @@ public class Controller {
                     bot.dropCube(1, i);
                 }
                 break;
+			*/
+			case 1:
+				bot.init();
+				int pos = 1;
+				while(!Button.ESCAPE.isDown()){
+					LCD.clear();
+					LCD.drawInt(pos, 0, 0);
+					LCD.drawInt(bot.curCell, 0, 3);
+					if(Button.RIGHT.isDown()){
+						pos = Math.min(6, pos+1);
+						while(Button.RIGHT.isDown()){
+						}
+					}
+					if(Button.LEFT.isDown()){
+						pos = Math.max(0, pos-1);
+						while(Button.LEFT.isDown()){
+						}
+					}
+					if(Button.ENTER.isDown()){
+						bot.moveTo(pos);
+						while(Button.ENTER.isDown()){
+						}
+					}
+				}
+				break;
+			/* old: color test
             case 2:
                 bot.readColors();
                 int[] colors = bot.getCellColors();
@@ -37,29 +64,74 @@ public class Controller {
                     colors[5];
                 ui.printTestOutput(s);
                 break;
-            case 3:
+			*/
+			case 3:
+				int detecciones = 0;
+				int dir = 0;
+				int velDir = 1;
+				int vel = bot.stepVel;
+				boolean caca = false;
+				boolean white = false;
+                while (true) {
+					bot.rail.setSpeed(vel);
+					LCD.clear();
+					LCD.drawInt(bot.getBarValue(), 0, 0);
+					LCD.drawInt(vel, 0, 2);
+					LCD.drawInt(detecciones, 0, 4);
+					if (white != bot.onWhiteBar()) {
+						white = bot.onWhiteBar();
+						if (white == true) {
+							detecciones += 1;
+						}
+					}
+					if(Button.ESCAPE.isDown()){
+						detecciones = 0;
+					}
+					if(Button.RIGHT.isDown()){
+						dir = Math.min(dir+1, 1);
+					}
+					if(Button.LEFT.isDown()){
+						dir = Math.max(dir-1, -1);
+					}
+					if(Button.ENTER.isDown()){
+						vel += velDir*50;
+						if(vel == 400){
+							velDir*=-1;
+						}
+						if(vel == 50){
+							velDir*=-1;
+						}
+					}
+					if(dir == 1){
+						bot.rail.backward();
+					}
+					else if(dir == -1){
+						bot.rail.forward();
+					}
+					else{
+						bot.rail.stop();
+					}
+					if(caca){
+						break;
+					}
+                }
+                break;
+			
+            case 4:
                 bot.init();
                 for (int i = 0; i <= 6; ++i) {
                     bot.moveTo(i);
                     Delay.msDelay(500);
                 };
                 for (int i = 6; i >= 0; --i) {
-
+					bot.moveTo(i);
+                    Delay.msDelay(500);
                 }
                 bot.init();
                 break;
-            case 4:
-                while (true) {
-                    LCD.clear();
-                    int color = bot.getBarValue();
-                    LCD.drawInt(color, 0, 0); 
-                    Delay.msDelay(100);
-                    if (Button.ESCAPE.isDown()) {
-                        break;
-                    }
-                }
-                break;
+            
             case 5:
+				bot.init();
                 bot.swap(2, 4);
                 break;
             case 6:
