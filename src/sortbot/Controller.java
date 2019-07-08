@@ -74,6 +74,7 @@ public class Controller {
 				}
 				break;
 			// readColor
+			/**
             case 3:
                 bot.readColors();
                 int[] colors = bot.getCellColors();
@@ -85,8 +86,10 @@ public class Controller {
                     colors[5];
                 ui.printTestOutput(s);
                 break;
+				*/
 			
 			/* old: lightSensor test
+			*/
 			case 3:
 				int detecciones = 0;
 				int dir = 0;
@@ -138,7 +141,6 @@ public class Controller {
 					}
                 }
                 break;
-			*/
             case 4:
                 bot.init();
                 for (int i = 0; i <= 6; ++i) {
