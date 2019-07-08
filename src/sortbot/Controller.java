@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "moveTo", "readColor", "lightSensor", "move across", 
+    public String[] tests = {"Init", "take&drop", "moveTo", "lightSensor", "move across", 
         "swap(2, 4)", "moveAcrossBlacks"};
 
     public Controller(SortBot bot) {
@@ -16,19 +16,40 @@ public class Controller {
 
     public void execTest(int test, UI ui) {
         switch(test) {
+			//Init
             case 0:
 				bot.init();
                 break;
-			/* old: take and drop
+			//Take and drop
             case 1:
                 bot.init();
-                for (int i = 0; i < 6; ++i) {
-                    bot.takeCube(1, i);
-                    bot.dropCube(1, i);
-                }
+				int pos2 = 0;
+				int slot = 1;
+				while(!Button.ESCAPE.isDown()){
+					LCD.clear();
+					LCD.drawInt(pos2, 0, 0);
+					LCD.drawInt(bot.curCell, 0, 3);
+					if(Button.RIGHT.isDown()){
+						pos2 = Math.min(6, pos2+1);
+						while(Button.RIGHT.isDown()){
+						}
+					}
+					if(Button.LEFT.isDown()){
+						pos2 = Math.max(0, pos2-1);
+						while(Button.LEFT.isDown()){
+						}
+					}
+					if(Button.ENTER.isDown()){
+						if(pos2 == 0) slot = -1;
+						else if(pos2 == 5) slot = 1;
+						bot.takeCube(slot, pos2);
+						bot.dropCube(slot, pos2);
+						while(Button.ENTER.isDown()){
+						}
+					}
+				}
                 break;
-			*/
-			case 1:
+			case 2:
 				bot.init();
 				int pos = 1;
 				while(!Button.ESCAPE.isDown()){
@@ -52,8 +73,8 @@ public class Controller {
 					}
 				}
 				break;
-			/* old: color test
-            case 2:
+			// readColor
+            case 3:
                 bot.readColors();
                 int[] colors = bot.getCellColors();
                 String s = String.valueOf(colors[0]) + " " +
@@ -64,7 +85,8 @@ public class Controller {
                     colors[5];
                 ui.printTestOutput(s);
                 break;
-			*/
+			
+			/* old: lightSensor test
 			case 3:
 				int detecciones = 0;
 				int dir = 0;
@@ -116,7 +138,7 @@ public class Controller {
 					}
                 }
                 break;
-			
+			*/
             case 4:
                 bot.init();
                 for (int i = 0; i <= 6; ++i) {
