@@ -7,16 +7,21 @@ import lejos.robotics.Color;
 import sortbot.threads.MoveThread;
 
 public class SortBot {
-	public int[] backwardCorrections = {-0, -28, -29, -33, -28, -34, -38}; //correccion al avanzar
-	public int[] forwardCorrections = {40, 33, 30 ,33, 28, 26, 0}; //correccion al retroceder
+    public int[] backwardCorrections = {0, 0, 0, 0, 0, 0, 0}; //corrección al avanzar
+	public int[] forwardCorrections = {0, 0, 0 , 0, 0, 0, 0}; //corrección al retroceder
 	public int[] dropCorrections = {35, 35, 35, 33, 37, 42, 0}; // rotaciones para dropear
+    public int[] barLights = {508, 500, 507, 510, 510, 507, 507};
 	//public int backwardCorrection = 0; // Moviendose izq a derecha (-20)
 	//public int forwardCorrection = 0; // Moviendose derecha a izquierda (45)
     public int stepVel = 200; // recomendado 200
-    public int dropVel = 200;
+    public int dropVel = 50;
     public int baseTime = 800;
-	public int barCenter = 546; // Valor del sensor al medio de la linea
-	public int barError = 20; // Error asociado
+
+	public int barLight = 420; // Sensibilidad sensor moviendose rápido
+    public int barLightsError = 10;
+    public int barToCenterBackward = 28;
+    public int barToCenterForward = 25;
+
     public NXTRegulatedMotor rail;
     public NXTRegulatedMotor base;
     public NXTRegulatedMotor head;
@@ -119,15 +124,20 @@ public class SortBot {
 			}
 		}
 	}
-	
+
 	public boolean onWhiteBar(){
 		int light = getBarValue();
-		int lower = barCenter - barError;
-		int upper = barCenter + barError;
-		return light > lower && light < upper;
-	}
+        return light > barLight;
+    }
+
     public boolean onBlackBar() {
         return !onWhiteBar();
+    }
+
+    public boolean onTargetBar(int targetCell, int dir){
+        int light = getBarValue();
+        dir = Math.max(dir, 0); // si es -1 se hace 0
+        return light > barLights[targetCell - dir] - barLightsError;
     }
 
     public int getBarValue() {
@@ -143,6 +153,14 @@ public class SortBot {
     public void moveTo(int cell, boolean immediateReturn) {
         int steps = cell-curCell;
         move(steps, immediateReturn);
+    }
+
+    public void moveToNextWall(){
+        rail.backward();
+        rail.setSpeed(dropVel);
+        while(!onTargetBar(curCell+1, 1)){}
+        rail.stop();
+        rail.setSpeed(stepVel);
     }
 
     /**
@@ -194,10 +212,10 @@ public class SortBot {
 	
 	public void takeCube(int slot, int pos){
 		if(pos == 0){
-			
+			// TODO
 		}
 		else{
-			
+			// TODO
 		}
 		cubeAct(slot, pos, false, "normal");
         slots[slotIdToIndex(slot)] = cellColors[pos];
@@ -224,11 +242,9 @@ public class SortBot {
         baseToggle();
 		//drop nuevo con rotaciones
 		if(drop){
-			rail.setSpeed(dropVel);
-			rail.rotate(-dropCorrections[curCell]);
+			moveToNextWall();
 			baseToggle();
-			rail.rotate(dropCorrections[curCell]);
-			rail.setSpeed(stepVel);
+			rail.rotate(barToCenterForward);
 		}
 		/* old drop con sensor de luz
         if (drop){
