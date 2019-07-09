@@ -1,13 +1,14 @@
 package sortbot;
 
 import lejos.util.Delay;
+import lejos.robotics.Color;
 import lejos.nxt.*;
 import java.util.Arrays;
 
 public class Controller {
 
     SortBot bot;
-    public String[] tests = {"Init", "take&drop", "moveTo", "lightSensor", "move across", 
+    public String[] tests = {"Init", "take&drop", "moveTo", "readColors", "move across", 
         "swap(2, 4)", "moveAcrossBlacks"};
 
     public Controller(SortBot bot) {
@@ -74,22 +75,25 @@ public class Controller {
 				}
 				break;
 			// readColor
-			/**
             case 3:
                 bot.readColors();
                 int[] colors = bot.getCellColors();
+				Color[] rawColors = bot.colorMapper.colors;
                 String s = String.valueOf(colors[0]) + " " +
                     colors[1] + " " +
                     colors[2] + " " +
                     colors[3] + " " +
                     colors[4] + " " +
                     colors[5];
+				for (int i : colors) {
+					Color rawColor = rawColors[i];
+					s += "\n" + String.valueOf(i) + " " + String.valueOf(rawColor.getRed())
+						+ " " + String.valueOf(rawColor.getBlue()) 
+						+ " " + String.valueOf(rawColor.getGreen());
+				}
                 ui.printTestOutput(s);
                 break;
-				*/
-			
 			/* old: lightSensor test
-			*/
 			case 3:
 				int detecciones = 0;
 				int dir = 0;
@@ -141,6 +145,7 @@ public class Controller {
 					}
                 }
                 break;
+				*/
             case 4:
                 bot.init();
                 for (int i = 0; i <= 6; ++i) {
