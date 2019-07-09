@@ -9,7 +9,7 @@ public class Controller {
 
     SortBot bot;
     public String[] tests = {"Init", "take&drop", "moveTo", "readColors", "move across", 
-        "swap(2, 4)", "moveAcrossBlacks"};
+        "swap(3, 4)", "moveAcrossBlacks"};
 
     public Controller(SortBot bot) {
         this.bot = bot;
@@ -161,7 +161,7 @@ public class Controller {
             
             case 5:
 				bot.init();
-                bot.swap(2, 4);
+                bot.swap(3, 4);
                 break;
             case 6:
                 bot.init();
@@ -186,19 +186,16 @@ public class Controller {
     public void bubbleSort() {
         bot.init(); 
         bot.readColors();
-        bot.moveTo(6);
-        bot.moveTo(0);
         while (!bot.isSorted()) {
             int[] colors = bot.getCellColors();
             for (int i = 0; i < colors.length - 1; ++i) {
+				colors = bot.getCellColors();
                 if (colors[i] > colors[i+1]) {
                     bot.swap(i, i+1); 
                 }
             }
-            // se mueve el robot por todo el tablero
-            // como si este estuviese chequeando el orden
-            bot.moveTo(6);
-            bot.moveTo(0);
+			bot.moveTo(6);
+			bot.moveTo(0);
         }
     }
 

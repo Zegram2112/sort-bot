@@ -6,8 +6,8 @@ import lejos.robotics.Color;
 public class ColorMapper {
 
     Color[] colors = {
-        new Color(4, 4, 4), new Color(6, 30, 18), new Color(29, 4, 9),
-        new Color(6, 9, 15), new Color(58, 8, 50), new Color(67, 57, 69)
+        new Color(11, 10, 10), new Color(15, 36, 24), new Color(31, 5, 10),
+        new Color(9, 12, 17), new Color(61, 11, 51), new Color(60, 50, 59)
     }; // colores por defecto
 
     public ColorMapper() {

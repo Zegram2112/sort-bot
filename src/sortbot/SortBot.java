@@ -7,18 +7,14 @@ import lejos.robotics.Color;
 import sortbot.threads.MoveThread;
 
 public class SortBot {
-    public int[] backwardCorrections = {0, 0, 0, 0, 0, 0, 0}; //corrección al avanzar
-	public int[] forwardCorrections = {0, 0, 0 , 0, 0, 0, 0}; //corrección al retroceder
 	public int[] dropCorrections = {35, 35, 35, 33, 37, 42, 0}; // rotaciones para dropear
-    public int[] barLights = {508, 500, 507, 510, 510, 507, 507};
-	//public int backwardCorrection = 0; // Moviendose izq a derecha (-20)
-	//public int forwardCorrection = 0; // Moviendose derecha a izquierda (45)
+    public int[] barLights = {508, 500, 507, 510, 510, 500, 500};
     public int stepVel = 200; // recomendado 200
     public int dropVel = 50;
     public int baseTime = 800;
 
 	public int barLight = 420; // Sensibilidad sensor moviendose rápido
-    public int barLightsError = 10;
+    public int barLightsError = 20;
     public int barToCenterBackward = 28;
     public int barToCenterForward = 25;
 
@@ -264,6 +260,19 @@ public class SortBot {
         head.rotate(-90*slot);
     }
 
+    /* TODO
+    public void swapAdjacent(int posA){ // fast swap of posA, posA+1
+        moveTo(posA);
+        moveToNextWall();
+        baseToggle(true);
+        baseToggle(true);
+        head.rotate(180);
+        baseToggle(true);
+        rail.rotate(barToCenterForward);
+		baseToggle(true);
+    }
+    */
+
     public void swap(int posA, int posB) {
 		if(posA == posB) return;
 		if(posA > posB){ //swapear las variables para que posA sea menor
@@ -271,10 +280,12 @@ public class SortBot {
 			posA = posB;
 			posB = aux;
 		}
-        takeCube(-1, posA);
-        takeCube(1, posB);
-        dropCube(-1, posB);
-        dropCube(1, posA);
+        int slotA = 1;
+        if(posA == 0) slotA = -1;
+        int slotB = -1*slotA;
+        takeCube(slotA, posA);
+        takeCube(slotB, posB);
+        dropCube(slotA, posB);
+        dropCube(slotB, posA);
     }
-
 }
