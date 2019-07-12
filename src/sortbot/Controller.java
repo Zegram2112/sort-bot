@@ -24,31 +24,31 @@ public class Controller {
 			//Take and drop
             case 1:
                 bot.init();
-				int pos2 = 0;
-				int slot = 1;
-				while(!Button.ESCAPE.isDown()){
-					LCD.clear();
-					LCD.drawInt(pos2, 0, 0);
-					LCD.drawInt(bot.curCell, 0, 3);
-					if(Button.RIGHT.isDown()){
-						pos2 = Math.min(6, pos2+1);
-						while(Button.RIGHT.isDown()){
-						}
-					}
-					if(Button.LEFT.isDown()){
-						pos2 = Math.max(0, pos2-1);
-						while(Button.LEFT.isDown()){
-						}
-					}
-					if(Button.ENTER.isDown()){
-						if(pos2 == 0) slot = -1;
-						else if(pos2 == 5) slot = 1;
-						bot.takeCube(slot, pos2);
-						bot.dropCube(slot, pos2);
-						while(Button.ENTER.isDown()){
-						}
-					}
-				}
+                int pos2 = 0;
+                int slot = 1;
+                while(!Button.ESCAPE.isDown()){
+                    LCD.clear();
+                    LCD.drawInt(pos2, 0, 0);
+                    LCD.drawInt(bot.curCell, 0, 3);
+                    if(Button.RIGHT.isDown()){
+                        pos2 = Math.min(6, pos2+1);
+                        while(Button.RIGHT.isDown()){
+                        }
+                    }
+                    if(Button.LEFT.isDown()){
+                        pos2 = Math.max(0, pos2-1);
+                        while(Button.LEFT.isDown()){
+                        }
+                    }
+                    if(Button.ENTER.isDown()){
+                        if(pos2 == 0) slot = -1;
+                        else if(pos2 == 5) slot = 1;
+                        bot.takeCube(slot, pos2);
+                        bot.dropCube(slot, pos2);
+                        while(Button.ENTER.isDown()){
+                        }
+                    }
+                }
                 break;
 			case 2:
 				bot.init();
